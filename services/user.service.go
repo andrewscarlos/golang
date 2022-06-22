@@ -5,7 +5,6 @@ import (
 	"errors"
 	"github.com/andrewscarlos/golang/models"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -73,7 +72,7 @@ func (u *UserService) UpdateUser(user *models.User) error {
 }
 
 func (u *UserService) DeleteUser(name *string) error {
-	filter := bson.D{primitive.E{Key: "name", Value: name}}
+	filter := bson.D{bson.E{Key: "user_name", Value: name}}
 	result, _ := u.usercollection.DeleteOne(u.ctx, filter)
 	if result.DeletedCount != 1 {
 		return errors.New("no matched document found for delete")

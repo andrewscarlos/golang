@@ -8,10 +8,10 @@ import (
 )
 
 type UserController struct {
-	UserService services.UserService
+	UserService services.UserServiceInterface
 }
 
-func New(userservice services.UserService) UserController {
+func New(userservice services.UserServiceInterface) UserController {
 	return UserController{
 		UserService: userservice,
 	}
@@ -67,7 +67,7 @@ func (u *UserController) UpdateUser(ctx *gin.Context) {
 }
 
 func (u *UserController) DeleteUser(ctx *gin.Context) {
-	var username string = ctx.Param("name")
+	username := ctx.Param("name")
 	err := u.UserService.DeleteUser(&username)
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
