@@ -3,19 +3,19 @@ package main
 import (
 	"context"
 	"fmt"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
-	"log"
-
 	"github.com/andrewscarlos/golang/controllers"
 	"github.com/andrewscarlos/golang/services"
+	"log"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 var (
 	server      *gin.Engine
-	us          services.UserServiceInterface
+	us          services.UserService
 	uc          controllers.UserController
 	ctx         context.Context
 	userc       *mongo.Collection

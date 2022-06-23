@@ -8,41 +8,41 @@ import (
 )
 
 type UserController struct {
-	UserService services.UserServiceInterface
+	UserService services.UserService
 }
 
-func New(userservice services.UserServiceInterface) UserController {
+func New(userservice services.UserService) UserController {
 	return UserController{
 		UserService: userservice,
 	}
 }
 
-func (u *UserController) CreateUser(ctx *gin.Context) {
+func (uc *UserController) CreateUser(ctx *gin.Context) {
 	var user models.User
 	if err := ctx.ShouldBindJSON(&user); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"Message": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
-	err := u.UserService.CreateUser(&user)
+	err := uc.UserService.CreateUser(&user)
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, gin.H{"Message": err.Error()})
+		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"Message": "success"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "success"})
 }
 
-func (u *UserController) GetUser(ctx *gin.Context) {
-	username := ctx.Param("name")
-	user, err := u.UserService.GetUser(&username)
+func (uc *UserController) GetUser(ctx *gin.Context) {
+	var username string = ctx.Param("name")
+	user, err := uc.UserService.GetUser(&username)
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, gin.H{"Message": err.Error()})
+		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"Message": user})
+	ctx.JSON(http.StatusOK, user)
 }
 
-func (u *UserController) GetAll(ctx *gin.Context) {
-	users, err := u.UserService.GetAll()
+func (uc *UserController) GetAll(ctx *gin.Context) {
+	users, err := uc.UserService.GetAll()
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
 		return
@@ -50,25 +50,23 @@ func (u *UserController) GetAll(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, users)
 }
 
-func (u *UserController) UpdateUser(ctx *gin.Context) {
+func (uc *UserController) UpdateUser(ctx *gin.Context) {
 	var user models.User
 	if err := ctx.ShouldBindJSON(&user); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"Message": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
-	err := u.UserService.UpdateUser(&user)
-
+	err := uc.UserService.UpdateUser(&user)
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, gin.H{"Message": err.Error()})
+		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
 		return
 	}
-
-	ctx.JSON(http.StatusOK, gin.H{"Message": "success"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "success"})
 }
 
-func (u *UserController) DeleteUser(ctx *gin.Context) {
-	username := ctx.Param("name")
-	err := u.UserService.DeleteUser(&username)
+func (uc *UserController) DeleteUser(ctx *gin.Context) {
+	var username string = ctx.Param("name")
+	err := uc.UserService.DeleteUser(&username)
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
 		return
@@ -77,10 +75,10 @@ func (u *UserController) DeleteUser(ctx *gin.Context) {
 }
 
 func (uc *UserController) RegisterUserRoutes(rg *gin.RouterGroup) {
-	userRouter := rg.Group("/user")
-	userRouter.POST("/create", uc.CreateUser)
-	userRouter.GET("/get/:name", uc.GetUser)
-	userRouter.GET("/getall", uc.GetAll)
-	userRouter.PATCH("/update", uc.UpdateUser)
-	userRouter.DELETE("/delete/:name", uc.DeleteUser)
+	userroute := rg.Group("/user")
+	userroute.POST("/create", uc.CreateUser)
+	userroute.GET("/get/:name", uc.GetUser)
+	userroute.GET("/getall", uc.GetAll)
+	userroute.PATCH("/update", uc.UpdateUser)
+	userroute.DELETE("/delete/:name", uc.DeleteUser)
 }
